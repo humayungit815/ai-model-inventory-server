@@ -56,6 +56,13 @@ async function run() {
 			res.send(result);
 		});
 
+		app.delete("/models/:id", async (req, res) => {
+			const {id} = req.params;
+			const objectId = {_id: new ObjectId(id)};
+			const result = await modelCollection.deleteOne(objectId);
+			res.send(result);
+		});
+
 		// app.get("/latest-models", async (req, res) => {
 		// 	const result = await modelCollection.find().toArray();
 		// 	res.send(result);
