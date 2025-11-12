@@ -26,6 +26,7 @@ async function run() {
 
 		const db = client.db("aiModelDB");
 		const modelCollection = db.collection("models");
+		const purchasedCollection = db.collection("purchased");
 
 		app.get("/models", async (req, res) => {
 			const result = await modelCollection.find().toArray();
@@ -60,6 +61,30 @@ async function run() {
 			const {id} = req.params;
 			const objectId = {_id: new ObjectId(id)};
 			const result = await modelCollection.deleteOne(objectId);
+			res.send(result);
+		});
+
+		app.get("/my-model", async (req, res) => {
+			const email = req.query.email;
+			const result = await modelCollection.find({createdBy: email}).toArray();
+			res.send(result);
+		});
+
+		app.post("/purchased", async (req, res) => {
+			const data = req.body;
+			const result = await purchasedCollection.insertOne(data);
+
+			const modelId = data.modelId;
+			await modelCollection.updateOne(
+				{_id: new ObjectId(modelId)},
+				{$inc: {purchased: 1}}
+			);
+
+			res.send(result);
+		});
+
+		app.get("/purchased", async (req, res) => {
+			const result = await purchasedCollection.find().toArray();
 			res.send(result);
 		});
 
