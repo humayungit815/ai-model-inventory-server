@@ -97,7 +97,10 @@ async function run() {
 				.sort({createdAt: -1})
 				.limit(6)
 				.toArray();
-			res.send(result);
+			res.send({
+				success: true,
+				result,
+			});
 		});
 
 		app.get("/search", async (req, res) => {
