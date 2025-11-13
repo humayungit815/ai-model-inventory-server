@@ -80,7 +80,10 @@ async function run() {
 				{$inc: {purchased: 1}}
 			);
 
-			res.send(result);
+			res.send({
+				success: true,
+				result,
+			});
 		});
 
 		app.get("/purchased", async (req, res) => {
@@ -104,8 +107,6 @@ async function run() {
 				.toArray();
 			res.send(result);
 		});
-
-		//
 
 		app.get("/filter", async (req, res) => {
 			const {frameworks} = req.query;
