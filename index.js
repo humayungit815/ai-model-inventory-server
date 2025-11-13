@@ -87,7 +87,14 @@ async function run() {
 		});
 
 		app.get("/purchased", async (req, res) => {
-			const result = await purchasedCollection.find().toArray();
+			const email = req.query.email;
+			let query = {};
+
+			if (email) {
+				query = {purchasedBy: email};
+			}
+
+			const result = await purchasedCollection.find(query).toArray();
 			res.send(result);
 		});
 
