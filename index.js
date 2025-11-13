@@ -88,18 +88,35 @@ async function run() {
 			res.send(result);
 		});
 
-		// app.get("/latest-models", async (req, res) => {
-		// 	const result = await modelCollection.find().toArray();
-		// 	res.send(result);
-		// });
-		// app.get("/latest-models", async (req, res) => {
-		// 	const result = await modelCollection
-		// 		.find()
-		// 		.sort({_id: -1})
-		// 		.limit(6)
-		// 		.toArray();
-		// 	res.send(result);
-		// });
+		app.get("/latest-models", async (req, res) => {
+			const result = await modelCollection
+				.find()
+				.sort({createdAt: -1})
+				.limit(6)
+				.toArray();
+			res.send(result);
+		});
+
+		app.get("/search", async (req, res) => {
+			const search_text = req.query.search;
+			const result = await modelCollection
+				.find({name: {$regex: search_text, $options: "i"}})
+				.toArray();
+			res.send(result);
+		});
+
+		app.get("/models", async (req, res) => {
+			const framework = req.query.framework;
+			let query = {};
+			if (framework) {
+				query.framework = framework;
+			}
+			const result = await modelCollection
+				.find(query)
+				.sort({_id: -1})
+				.toArray();
+			res.send(result);
+		});
 
 		// Send a ping to confirm a successful connection
 		await client.db("admin").command({ping: 1});
