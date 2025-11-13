@@ -108,7 +108,10 @@ async function run() {
 			const result = await modelCollection
 				.find({name: {$regex: search_text, $options: "i"}})
 				.toArray();
-			res.send(result);
+			res.send({
+				success: true,
+				result,
+			});
 		});
 
 		app.get("/filter", async (req, res) => {
